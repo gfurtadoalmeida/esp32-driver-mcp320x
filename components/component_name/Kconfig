@@ -1,0 +1,10 @@
+menu "Component_Name Configuration"
+
+    config COMP_NAME_CONFIG_ONE
+        int "A short description"
+        range 10 1000
+        default 50
+        help
+            Full description for help.
+
+endmenu # Component_Name Configuration
