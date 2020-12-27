@@ -5,10 +5,10 @@ idf_component_register(
         "${srcsCOMP}"
     INCLUDE_DIRS
         "../include"
+        "include"
     PRIV_INCLUDE_DIRS
         "../private_include"
     REQUIRES
         unity
-        # Change the component name.
-        component_name
+        mcp320x
 )

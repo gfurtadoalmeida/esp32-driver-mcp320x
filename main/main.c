@@ -1,11 +1,10 @@
-/* When building using VSCode tooling, the necessary
- variables are not injected in build time.
-*/
-#include "../build/config/sdkconfig.h"
+#include "mcp320x.h"
 
-#include <stdio.h>
+/* This file serve two purposes:
+ *   1. Illustrate the layout of an ESP-IDF project.
+ *   2. A place to debug the driver.
+ */
 
 void app_main(void)
 {
-
 }

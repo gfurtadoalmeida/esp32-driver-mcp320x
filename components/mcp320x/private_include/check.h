@@ -11,8 +11,7 @@ extern "C"
     /**
      * Tag used on ESP_LOG* macros.
      */
-    //Change the tag name and value.
-    static const char *COMPONENT_NAME_TAG = "component_name";
+    static const char *MCP320X_TAG = "mcp320x";
 
 /**
  * @brief Macro that forces a method to return a value
@@ -25,12 +24,11 @@ extern "C"
  * @return If the condition fails the method will return what was passed on
  * "return_value" parameter, otherwise the method will continue.
  */
-// Change the define name.
-#define COMP_NAME_CHECK(condition, message, return_value)                            \
-    if (!(condition))                                                                \
-    {                                                                                \
-        ESP_LOGE(COMPONENT_NAME_TAG, "%s(%d): %s", __FUNCTION__, __LINE__, message); \
-        return (return_value);                                                       \
+#define MCP320X_CHECK(condition, message, return_value)                       \
+    if (!(condition))                                                         \
+    {                                                                         \
+        ESP_LOGE(MCP320X_TAG, "%s(%d): %s", __FUNCTION__, __LINE__, message); \
+        return (return_value);                                                \
     }
 
 #ifdef __cplusplus
