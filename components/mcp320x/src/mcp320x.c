@@ -12,9 +12,9 @@ extern "C"
      */
     struct mcp320x_t
     {
-        spi_device_handle_t spi_handle; /*!< SPI device handle. */
-        mcp320x_model_t mcp_model;      /*!< Device model. */
-        double reference_voltage;       /*!< Reference voltage, in millivolts. */
+        spi_device_handle_t spi_handle;        /*!< SPI device handle. */
+        mcp320x_model_t mcp_model;             /*!< Device model. */
+        double millivolts_per_resolution_step; /*!< Millivolts per resolution step (reference voltage / ADC resolution). */
     };
 
     mcp320x_err_t mcp320x_initialize(mcp320x_config_t *config, mcp320x_handle_t *handle)
@@ -45,7 +45,7 @@ extern "C"
         mcp320x_handle_t dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
         dev->spi_handle = spi_device_handle;
         dev->mcp_model = config->device_model;
-        dev->reference_voltage = (double)config->reference_voltage;
+        dev->millivolts_per_resolution_step = (double)config->reference_voltage / MCP320X_RESOLUTION;
 
         *handle = dev;
 
@@ -109,7 +109,7 @@ extern "C"
         if (err != MCP320X_OK)
             return err;
 
-        *value = (short)((handle->reference_voltage / MCP320X_RESOLUTION) * raw_value);
+        *value = (short)(raw_value * handle->millivolts_per_resolution_step);
 
         return MCP320X_OK;
     }
