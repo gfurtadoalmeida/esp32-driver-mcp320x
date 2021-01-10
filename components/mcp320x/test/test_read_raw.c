@@ -7,7 +7,7 @@ extern "C"
 
     TEST_CASE("Cannot read raw with invalid handle", "[read][raw]")
     {
-        short value;
+        unsigned short value;
 
         mcp320x_err_t result = mcp320x_read_raw(NULL, MCP320X_CHANNEL_0, MCP320X_READ_MODE_SINGLE, &value);
 
@@ -16,7 +16,7 @@ extern "C"
 
     TEST_CASE("Cannot read raw with invalid channel", "[read][raw]")
     {
-        short value;
+        unsigned short value;
 
         mcp320x_err_t result = mcp320x_read_raw(DUMMY_HANDLE, MCP320X_CHANNEL_7, MCP320X_READ_MODE_SINGLE, &value);
 
@@ -36,7 +36,7 @@ extern "C"
 
         mcp320x_initialize(&VALID_CONFIG, &handle);
 
-        short value;
+        unsigned short value;
 
         mcp320x_err_t result = mcp320x_read_raw(handle, MCP320X_CHANNEL_3, MCP320X_READ_MODE_SINGLE, &value);
 
