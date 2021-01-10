@@ -126,7 +126,7 @@ extern "C"
     mcp320x_err_t mcp320x_read_raw(mcp320x_handle_t handle,
                                    mcp320x_channel_t channel,
                                    mcp320x_read_mode_t read_mode,
-                                   short *value);
+                                   unsigned short *value);
 
     /**
      * @brief Reads the converted voltage, in millivolts, from a channel.
@@ -143,7 +143,7 @@ extern "C"
     mcp320x_err_t mcp320x_read_voltage(mcp320x_handle_t handle,
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
-                                       short *value);
+                                       unsigned short *value);
 
 #ifdef __cplusplus
 }

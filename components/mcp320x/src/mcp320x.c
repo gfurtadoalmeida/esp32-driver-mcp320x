@@ -65,7 +65,7 @@ extern "C"
     mcp320x_err_t mcp320x_read_raw(mcp320x_handle_t handle,
                                    mcp320x_channel_t channel,
                                    mcp320x_read_mode_t read_mode,
-                                   short *value)
+                                   unsigned short *value)
     {
         MCP320X_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE);
         MCP320X_CHECK((int)channel < (int)handle->mcp_model, "channel error(not supported)", MCP320X_ERR_INVALID_CHANNEL);
@@ -98,18 +98,18 @@ extern "C"
     mcp320x_err_t mcp320x_read_voltage(mcp320x_handle_t handle,
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
-                                       short *value)
+                                       unsigned short *value)
     {
         MCP320X_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE);
 
-        short raw_value;
+        unsigned short raw_value;
 
         mcp320x_err_t err = mcp320x_read_raw(handle, channel, read_mode, &raw_value);
 
         if (err != MCP320X_OK)
             return err;
 
-        *value = (short)(raw_value * handle->millivolts_per_resolution_step);
+        *value = (unsigned short)(raw_value * handle->millivolts_per_resolution_step);
 
         return MCP320X_OK;
     }
