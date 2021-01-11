@@ -69,6 +69,15 @@ Driver configuration:
 
 The task watchdog for CPU0 is disabled on the test project. It is needed so we can interact with the test tool.  
 
+### Hardware Setup
+
+* MCP320X:
+  * Reference: 5V
+  * Channel 3: 2.5V
+* ESP32:
+  * SPI host = SPI3_HOST
+  * SPI Chip Select pin: GPIO_NUM_5
+
 ### On VS Code
 
 1. Build the test project: `ctrl+shif+p -> Task: Run Task -> Build test`
