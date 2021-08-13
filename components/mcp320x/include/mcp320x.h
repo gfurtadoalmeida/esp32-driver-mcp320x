@@ -15,7 +15,7 @@ extern "C"
 #define MCP320X_CLOCK_MIN_HZ 10000   /*!< Min recommended clock speed for a reliable reading = 10Khz. */
 #define MCP320X_CLOCK_MAX_HZ 2000000 /*!< Max clock speed supported = 2Mhz at 5V. */
 #define MCP320X_REF_VOLTAGE_MIN 250  /*!< Min reference voltage, in mV = 250mV. */
-#define MCP320X_REF_VOLTAGE_MAX 7000 /*!< Max reference voltage, in mV = 7V. The max safe voltage is 5V. */
+#define MCP320X_REF_VOLTAGE_MAX 7000 /*!< Max reference voltage, in mV = 7000mV. The max safe voltage is 5000mV. */
 
     // Result codes
 
@@ -28,6 +28,7 @@ extern "C"
 #define MCP320X_ERR_INVALID_CHANNEL 21           /*!< Failure: invalid channel. */
 #define MCP320X_ERR_INVALID_REFERENCE_VOLTAGE 22 /*!< Failure: invalid reference voltage. */
 #define MCP320X_ERR_SPI_BUS 30                   /*!< Failure: error communicating with SPI bus. */
+#define MCP320X_ERR_SPI_BUS_ACQUIRE 31           /*!< Failure: error communicating with SPI bus to acquire it. */
 
     /**
      * @typedef mcp320x_err_t
@@ -91,7 +92,7 @@ extern "C"
     {
         spi_host_device_t host;       /*!< SPI peripheral used to communicate with the device. */
         mcp320x_model_t device_model; /*!< MCP320X model used with this configuration. */
-        int clock_speed_hz;           /*!< Clock speed, divisors of 80MHz, in Hz. */
+        int clock_speed_hz;           /*!< Clock speed, in Hz. Recommended the use of divisors of 80MHz. */
         int reference_voltage;        /*!< Reference voltage, in millivolts. */
         gpio_num_t cs_io_num;         /*!< GPIO pin used for Chip Select (CS). */
     } mcp320x_config_t;
@@ -112,6 +113,27 @@ extern "C"
     mcp320x_err_t mcp320x_free(mcp320x_handle_t handle);
 
     /**
+     * @brief Occupies the SPI bus for continuous readings.
+     *
+     * @note This function is not thread safe when multiple tasks access the same device.
+     *
+     * @param handle MCP320X context handle.
+     * @param wait Time to wait before the the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_acquire(mcp320x_handle_t handle, TickType_t wait);
+
+    /**
+     * @brief Releases the SPI bus occupied by the ADC. All other devices on the bus can start sending transactions.
+     *
+     * @note This function is not thread safe when multiple tasks access the same device.
+     *
+     * @param handle MCP320X context handle.
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_release(mcp320x_handle_t handle);
+
+    /**
      * @brief Reads the raw value from a channel; reads a value from 0 to 4095 (MCP320X_RESOLUTION).
      *
      * @note This function is not thread safe when multiple tasks access the same device.
@@ -129,6 +151,24 @@ extern "C"
                                    unsigned short *value);
 
     /**
+     * @brief Samples a channel; reads a value from 0 to 4095 (MCP320X_RESOLUTION).
+     *
+     * @note This function is not thread safe when multiple tasks access the same device.
+     *
+     * @param handle MCP320X context handle.
+     * @param channel Channel to read from.
+     * @param read_mode Read mode.
+     * @param sample_count How many samples to take.
+     * @param value Pointer to where the value will be stored.
+     *
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_sample_raw(mcp320x_handle_t handle,
+                                     mcp320x_channel_t channel,
+                                     mcp320x_read_mode_t read_mode,
+                                     unsigned short sample_count,
+                                     unsigned short *value);
+    /**
      * @brief Reads the converted voltage, in millivolts, from a channel.
      *
      * @note This function is not thread safe when multiple tasks access the same device.
@@ -144,6 +184,25 @@ extern "C"
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
                                        unsigned short *value);
+
+    /**
+     * @brief Samples and converts a raw value to voltage, in millivolts, from a channel.
+     *
+     * @note This function is not thread safe when multiple tasks access the same device.
+     *
+     * @param handle MCP320X context handle.
+     * @param channel Channel to read from.
+     * @param read_mode Read mode.
+     * @param sample_count How many samples to take.
+     * @param value Pointer to where the value will be stored.
+     *
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_sample_voltage(mcp320x_handle_t handle,
+                                         mcp320x_channel_t channel,
+                                         mcp320x_read_mode_t read_mode,
+                                         unsigned short sample_count,
+                                         unsigned short *value);
 
 #ifdef __cplusplus
 }

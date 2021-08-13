@@ -5,6 +5,10 @@ extern "C"
 {
 #endif
 
+    // ======
+    // INIT
+    // ======
+
     TEST_CASE("Cannot init with null configuration", "[init]")
     {
         mcp320x_handle_t handle;
@@ -84,6 +88,10 @@ extern "C"
         mcp320x_free(handle);
     }
 
+    // ======
+    // FREE
+    // ======
+
     TEST_CASE("Cannot free with null handle", "[free]")
     {
         mcp320x_err_t result = mcp320x_free(NULL);
@@ -100,6 +108,28 @@ extern "C"
         mcp320x_err_t result = mcp320x_free(handle);
 
         TEST_ASSERT_EQUAL(MCP320X_OK, result);
+    }
+
+    // =======
+    // ACQUIRE
+    // =======
+
+    TEST_CASE("Cannot acquire with null handle", "[acquire]")
+    {
+        mcp320x_err_t result = mcp320x_acquire(NULL, portMAX_DELAY);
+
+        TEST_ASSERT_EQUAL(MCP320X_ERR_INVALID_HANDLE, result);
+    }
+
+    // =======
+    // RELEASE
+    // =======
+
+    TEST_CASE("Cannot release with null handle", "[release]")
+    {
+        mcp320x_err_t result = mcp320x_release(NULL);
+
+        TEST_ASSERT_EQUAL(MCP320X_ERR_INVALID_HANDLE, result);
     }
 
 #ifdef __cplusplus
