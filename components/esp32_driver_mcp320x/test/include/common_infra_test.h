@@ -14,7 +14,7 @@ extern "C"
 #endif
 
 #define EXECUTE_WITH_HANDLE(code)               \
-    mcp320x_handle_t handle;                    \
+    mcp320x_t *handle;                          \
     mcp320x_initialize(&VALID_CONFIG, &handle); \
     code;                                       \
     mcp320x_free(handle);

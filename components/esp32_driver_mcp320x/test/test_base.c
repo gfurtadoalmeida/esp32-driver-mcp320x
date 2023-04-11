@@ -11,7 +11,7 @@ extern "C"
 
     TEST_CASE("Cannot init with null configuration", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
 
         mcp320x_err_t result = mcp320x_initialize(NULL, &handle);
 
@@ -31,7 +31,7 @@ extern "C"
 
     TEST_CASE("Cannot init driver with low frequency", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
         mcp320x_config_t cfg = {
             .clock_speed_hz = MCP320X_CLOCK_MIN_HZ - 1,
             .reference_voltage = 5000};
@@ -43,7 +43,7 @@ extern "C"
 
     TEST_CASE("Cannot init with high frequency", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
         mcp320x_config_t cfg = {
             .clock_speed_hz = MCP320X_CLOCK_MAX_HZ + 1,
             .reference_voltage = 5000};
@@ -55,7 +55,7 @@ extern "C"
 
     TEST_CASE("Cannot init with low reference voltage", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
         mcp320x_config_t cfg = {
             .clock_speed_hz = 1000000,
             .reference_voltage = MCP320X_REF_VOLTAGE_MIN - 1};
@@ -67,7 +67,7 @@ extern "C"
 
     TEST_CASE("Cannot init with high reference voltage", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
         mcp320x_config_t cfg = {
             .clock_speed_hz = 1000000,
             .reference_voltage = MCP320X_REF_VOLTAGE_MAX + 1};
@@ -79,7 +79,7 @@ extern "C"
 
     TEST_CASE("Can init", "[init]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
 
         mcp320x_err_t result = mcp320x_initialize(&VALID_CONFIG, &handle);
 
@@ -101,7 +101,7 @@ extern "C"
 
     TEST_CASE("Can free", "[free]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
 
         mcp320x_initialize(&VALID_CONFIG, &handle);
 
@@ -123,7 +123,7 @@ extern "C"
 
     TEST_CASE("Can acquire", "[acquire]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
 
         mcp320x_initialize(&VALID_CONFIG, &handle);
 
@@ -148,7 +148,7 @@ extern "C"
 
     TEST_CASE("Can release", "[release]")
     {
-        mcp320x_handle_t handle;
+        mcp320x_t *handle;
 
         mcp320x_initialize(&VALID_CONFIG, &handle);
         mcp320x_acquire(handle, portMAX_DELAY);

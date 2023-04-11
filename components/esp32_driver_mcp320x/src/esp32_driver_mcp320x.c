@@ -18,7 +18,7 @@ extern "C"
         uint16_t reference_voltage;     /*!< Reference voltage, in millivolts. */
     };
 
-    mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_handle_t *handle)
+    mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_t **handle)
     {
         CMP_CHECK((config != NULL), "config error(NULL)", MCP320X_ERR_INVALID_CONFIG_HANDLE)
         CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
@@ -43,7 +43,7 @@ extern "C"
 
         CMP_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle) == ESP_OK, "failed to add device to SPI bus", MCP320X_ERR_SPI_BUS)
 
-        mcp320x_handle_t dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
+        mcp320x_t *dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
         dev->spi_handle = spi_device_handle;
         dev->mcp_model = config->device_model;
         dev->reference_voltage = config->reference_voltage;
@@ -53,7 +53,7 @@ extern "C"
         return MCP320X_OK;
     }
 
-    mcp320x_err_t mcp320x_free(mcp320x_handle_t handle)
+    mcp320x_err_t mcp320x_free(mcp320x_t *handle)
     {
         CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
         CMP_CHECK(spi_bus_remove_device(handle->spi_handle) == ESP_OK, "failed to remove device from bus", MCP320X_ERR_SPI_BUS)
@@ -63,7 +63,7 @@ extern "C"
         return MCP320X_OK;
     }
 
-    mcp320x_err_t mcp320x_acquire(mcp320x_handle_t handle, TickType_t wait)
+    mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t wait)
     {
         CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
         CMP_CHECK((spi_device_acquire_bus(handle->spi_handle, wait) == ESP_OK), "bus error(acquire)", MCP320X_ERR_SPI_BUS_ACQUIRE)
@@ -71,7 +71,7 @@ extern "C"
         return MCP320X_OK;
     }
 
-    mcp320x_err_t mcp320x_release(mcp320x_handle_t handle)
+    mcp320x_err_t mcp320x_release(mcp320x_t *handle)
     {
         CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
 
@@ -80,7 +80,7 @@ extern "C"
         return MCP320X_OK;
     }
 
-    mcp320x_err_t mcp320x_read(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                                mcp320x_channel_t channel,
                                mcp320x_read_mode_t read_mode,
                                uint16_t sample_count,
@@ -151,7 +151,7 @@ extern "C"
         return MCP320X_OK;
     }
 
-    mcp320x_err_t mcp320x_read_voltage(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
                                        uint16_t sample_count,
@@ -169,7 +169,7 @@ extern "C"
         return mcp320x_convert_to_voltage(handle, temp_value, value);
     }
 
-    mcp320x_err_t mcp320x_convert_to_voltage(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_convert_to_voltage(const mcp320x_t *handle,
                                              uint16_t value_read,
                                              uint16_t *value)
     {

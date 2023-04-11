@@ -45,12 +45,6 @@ extern "C"
     typedef struct mcp320x_t mcp320x_t;
 
     /**
-     * @typedef mcp320x_handle_t
-     * @brief Pointer to a MCP320X context.
-     */
-    typedef mcp320x_t *mcp320x_handle_t;
-
-    /**
      * @typedef mcp320x_model_t
      * @brief MCP320X model.
      */
@@ -100,47 +94,47 @@ extern "C"
     } mcp320x_config_t;
 
     /**
-     * @brief Adds a MCP320X device to a SPI bus.
+     * @brief Adds a MCP320X device to an already configured SPI bus.
      * @param config Pointer to a mcp320x_config_t struct specifying how the device should be initialized.
      * @param handle Pointer to where a MCP320X handle will be stored.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_handle_t *handle);
+    mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_t **handle);
 
     /**
      * @brief Removes a MCP320X device from a SPI bus.
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_free(mcp320x_handle_t handle);
+    mcp320x_err_t mcp320x_free(mcp320x_t *handle);
 
     /**
      * @brief Occupies the SPI bus for continuous readings.
      *
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      *
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @param wait Time to wait before the the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_acquire(mcp320x_handle_t handle, TickType_t wait);
+    mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t wait);
 
     /**
      * @brief Releases the SPI bus occupied by the ADC. All other devices on the bus can start sending transactions.
      *
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      *
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_release(mcp320x_handle_t handle);
+    mcp320x_err_t mcp320x_release(mcp320x_t *handle);
 
     /**
      * @brief Reads a value from 0 to 4095 (MCP320X_RESOLUTION-1).
      *
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      *
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @param channel Channel to read from.
      * @param read_mode Read mode.
      * @param sample_count How many samples to take.
@@ -148,7 +142,7 @@ extern "C"
      *
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_read(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                                mcp320x_channel_t channel,
                                mcp320x_read_mode_t read_mode,
                                uint16_t sample_count,
@@ -161,7 +155,7 @@ extern "C"
      *
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      *
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @param channel Channel to read from.
      * @param read_mode Read mode.
      * @param sample_count How many samples to take.
@@ -169,7 +163,7 @@ extern "C"
      *
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_read_voltage(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
                                        uint16_t sample_count,
@@ -179,13 +173,13 @@ extern "C"
      *@brief Converts a raw value to voltage, in millivolts, based on
      * the reference voltage.
      *
-     * @param handle MCP320X context handle.
+     * @param handle MCP320X handle.
      * @param value_read Value read by @ref mcp320x_read function.
      * @param value Pointer to where the value will be stored.
      *
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_convert_to_voltage(mcp320x_handle_t handle,
+    mcp320x_err_t mcp320x_convert_to_voltage(const mcp320x_t *handle,
                                              uint16_t value_read,
                                              uint16_t *value);
 
