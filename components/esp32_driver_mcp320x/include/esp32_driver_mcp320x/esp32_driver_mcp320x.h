@@ -45,7 +45,7 @@ extern "C"
     typedef struct mcp320x_t mcp320x_t;
 
     /**
-     * @typedef nextion_handle_t
+     * @typedef mcp320x_handle_t
      * @brief Pointer to a MCP320X context.
      */
     typedef mcp320x_t *mcp320x_handle_t;
