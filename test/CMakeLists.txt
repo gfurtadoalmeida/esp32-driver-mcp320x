@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 
-if(POLICY CMP0076)
-    cmake_policy(SET CMP0076 NEW)
-endif()
-
 set(EXTRA_COMPONENT_DIRS "../components")
-
-set(TEST_COMPONENTS "mcp320x" CACHE STRING "List of components to test")
+set(TEST_COMPONENTS "esp32_driver_mcp320x" CACHE STRING "List of components to test")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(test_runner)
+

@@ -5,10 +5,10 @@ idf_component_register(
         "${srcsCOMP}"
     INCLUDE_DIRS
         "../include"
-        "include"
     PRIV_INCLUDE_DIRS
         "../private_include"
+        "include"
     REQUIRES
         unity
-        mcp320x
+        esp32_driver_mcp320x
 )

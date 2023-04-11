@@ -121,6 +121,20 @@ extern "C"
         TEST_ASSERT_EQUAL(MCP320X_ERR_INVALID_HANDLE, result);
     }
 
+    TEST_CASE("Can acquire", "[acquire]")
+    {
+        mcp320x_handle_t handle;
+
+        mcp320x_initialize(&VALID_CONFIG, &handle);
+
+        mcp320x_err_t result = mcp320x_acquire(handle, portMAX_DELAY);
+
+        mcp320x_release(handle);
+        mcp320x_free(handle);
+
+        TEST_ASSERT_EQUAL(MCP320X_OK, result);
+    }
+
     // =======
     // RELEASE
     // =======
@@ -130,6 +144,20 @@ extern "C"
         mcp320x_err_t result = mcp320x_release(NULL);
 
         TEST_ASSERT_EQUAL(MCP320X_ERR_INVALID_HANDLE, result);
+    }
+
+    TEST_CASE("Can release", "[release]")
+    {
+        mcp320x_handle_t handle;
+
+        mcp320x_initialize(&VALID_CONFIG, &handle);
+        mcp320x_acquire(handle, portMAX_DELAY);
+
+        mcp320x_err_t result = mcp320x_release(handle);
+
+        mcp320x_free(handle);
+
+        TEST_ASSERT_EQUAL(MCP320X_OK, result);
     }
 
 #ifdef __cplusplus

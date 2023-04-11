@@ -3,6 +3,6 @@ idf_component_register(
     INCLUDE_DIRS ""
     REQUIRES
         freertos
-        driver
-        mcp320x
+        esp32_driver_mcp320x
 )
+

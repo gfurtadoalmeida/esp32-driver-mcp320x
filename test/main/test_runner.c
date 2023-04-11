@@ -1,12 +1,13 @@
+#include <stdio.h>
 #include "unity.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 
-static void print_banner(const char *text);
-
 #define GPIO_SCLK GPIO_NUM_18
 #define GPIO_MISO GPIO_NUM_19
 #define GPIO_MOSI GPIO_NUM_23
+
+static void print_banner(const char *text);
 
 void app_main(void)
 {
