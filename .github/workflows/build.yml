@@ -9,6 +9,7 @@ on:
       - 'test/**'
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 env:
   esp_docker_tag: v4.4.4
