@@ -47,7 +47,10 @@ void app_main(void)
     
     ESP_ERROR_CHECK(mcp320x_acquire(mcp320x_handle, portMAX_DELAY));
     
-    ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, MCP320X_CHANNEL_0, MCP320X_READ_MODE_SINGLE, &voltage));
+    ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, 
+                                         MCP320X_CHANNEL_0, 
+                                         MCP320X_READ_MODE_SINGLE, 
+                                         &voltage));
     
     ESP_ERROR_CHECK(mcp320x_release(mcp320x_handle));
     
