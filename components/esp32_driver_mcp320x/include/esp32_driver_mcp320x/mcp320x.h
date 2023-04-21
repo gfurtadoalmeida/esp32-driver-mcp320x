@@ -33,7 +33,7 @@ extern "C"
      * @typedef mcp320x_err_t
      * @brief Response code.
      */
-    typedef int32_t mcp320x_err_t;
+    typedef esp_err_t mcp320x_err_t;
 
     /**
      * @typedef mcp320x_t
@@ -91,21 +91,21 @@ extern "C"
     } mcp320x_config_t;
 
     /**
-     * @brief Adds a MCP320X device to an already configured SPI bus.
+     * @brief Add a MCP320X device to an already configured SPI bus.
      * @param[in] config Pointer to a mcp320x_config_t struct specifying how the device should be initialized.
      * @return Valid pointer, otherwise NULL.
      */
     mcp320x_t *mcp320x_install(mcp320x_config_t const *config);
 
     /**
-     * @brief Removes a MCP320X device from a SPI bus.
+     * @brief Remove a MCP320X device from a SPI bus.
      * @param[in] handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
     mcp320x_err_t mcp320x_delete(mcp320x_t *handle);
 
     /**
-     * @brief Occupies the SPI bus for continuous readings.
+     * @brief Occupy the SPI bus for continuous readings.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] timeout Time to wait before the the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
@@ -114,7 +114,7 @@ extern "C"
     mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t timeout);
 
     /**
-     * @brief Releases the SPI bus occupied by the ADC. All other devices on the bus can start sending transactions.
+     * @brief Release the SPI bus occupied by the ADC. All other devices on the bus can start sending transactions.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
@@ -122,7 +122,7 @@ extern "C"
     mcp320x_err_t mcp320x_release(mcp320x_t *handle);
 
     /**
-     * @brief Reads a value from 0 to 4095 (MCP320X_RESOLUTION-1).
+     * @brief Read a value from 0 to 4095 (MCP320X_RESOLUTION-1).
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
@@ -138,7 +138,7 @@ extern "C"
                                uint16_t *value);
 
     /**
-     * @brief Reads a value from 0 to 4095 (MCP320X_RESOLUTION-1)
+     * @brief Read a value from 0 to 4095 (MCP320X_RESOLUTION-1)
      * converting it to voltage, in millivolts based on the reference
      * voltage.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
@@ -156,7 +156,7 @@ extern "C"
                                        uint16_t *value);
 
     /**
-     *@brief Converts a raw value to voltage, in millivolts, based on
+     *@brief Convert a raw value to voltage, in millivolts, based on
      * the reference voltage.
      * @param[in] handle MCP320X handle.
      * @param[in] value_read Value read by @ref mcp320x_read function.
