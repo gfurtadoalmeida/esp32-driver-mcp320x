@@ -1,6 +1,6 @@
 # ESP32 MCP3204/3208 12-bit ADC Driver
 
-![GitHub Build Status](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/actions/workflows/build.yml/badge.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x)  
+![GitHub Build Status](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/actions/workflows/build.yml/badge.svg) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=bugs)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x)  
 ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP3204) and [MCP3208](https://www.microchip.com/en-us/product/MCP3208) 12-bit ADCs.
 
 ## Characteristics
