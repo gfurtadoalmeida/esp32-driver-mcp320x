@@ -1,14 +1,14 @@
 #ifndef __ESP32_DRIVER_MCP320X_MCP320X_H__
 #define __ESP32_DRIVER_MCP320X_MCP320X_H__
 
+#include <stdint.h>
+#include "driver/gpio.h"
+#include "driver/spi_master.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <stdint.h>
-#include "driver/gpio.h"
-#include "driver/spi_master.h"
 
     // Constants
 

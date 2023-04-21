@@ -1,12 +1,12 @@
 #ifndef __ESP32_DRIVER_MCP320X_ASSERTION_H__
 #define __ESP32_DRIVER_MCP320X_ASSERTION_H__
 
+#include "log.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "log.h"
 
 /**
  * @brief Returns a given value if the condition passed is false.
