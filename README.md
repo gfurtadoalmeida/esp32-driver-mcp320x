@@ -16,9 +16,9 @@ Everything is on the [wiki](https://github.com/gfurtadoalmeida/esp32-driver-mcp3
 ## Example
 
 ```cpp
-#include "esp_log.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
+#include "esp_log.h"
 #include "esp32_driver_mcp320x/mcp320x.h"
 
 void app_main(void)
@@ -39,24 +39,30 @@ void app_main(void)
         .reference_voltage = 5000,         // 5V
         .cs_io_num = GPIO_NUM_5};
 
+    uint16_t voltage = 0;
     mcp320x_t *mcp320x_handle;
-    uint16_t voltage;
 
-    ESP_ERROR_CHECK(spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0));
+    // Bus initialization is up to the developer.
+    spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0);
     
-    ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
+    // SPI device initialization.
+    mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle);
     
-    ESP_ERROR_CHECK(mcp320x_acquire(mcp320x_handle, portMAX_DELAY));
+    // Occupy the SPI bus for multiple transactions.
+    mcp320x_acquire(mcp320x_handle, portMAX_DELAY);
     
-    ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, 
-                                         MCP320X_CHANNEL_0, 
-                                         MCP320X_READ_MODE_SINGLE,
-                                         1000, 
-                                         &voltage));
+    // Read voltage, sampling 1000 times.
+    mcp320x_read_voltage(mcp320x_handle, 
+                         MCP320X_CHANNEL_0, 
+                         MCP320X_READ_MODE_SINGLE,
+                         1000, 
+                         &voltage);
     
-    ESP_ERROR_CHECK(mcp320x_release(mcp320x_handle));
+    // Unoccupy the SPI bus.
+    mcp320x_release(mcp320x_handle);
     
-    ESP_ERROR_CHECK(mcp320x_free(mcp320x_handle));
+    // Free resources.
+    mcp320x_free(mcp320x_handle);
 
     ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
 }
