@@ -6,7 +6,7 @@
 #include "unity_test_runner.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
-#include "esp32_driver_mcp320x/esp32_driver_mcp320x.h"
+#include "esp32_driver_mcp320x/mcp320x.h"
 
 #ifdef __cplusplus
 extern "C"

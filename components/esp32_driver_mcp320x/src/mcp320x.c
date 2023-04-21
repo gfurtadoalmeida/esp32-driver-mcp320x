@@ -3,7 +3,7 @@ extern "C"
 {
 #endif
 
-#include "esp32_driver_mcp320x/esp32_driver_mcp320x.h"
+#include "esp32_driver_mcp320x/mcp320x.h"
 #include "assertion.h"
 #include "log.h"
 

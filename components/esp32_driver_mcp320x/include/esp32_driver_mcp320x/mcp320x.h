@@ -1,5 +1,5 @@
-#ifndef __ESP32_DRIVER_MCP320X_H__
-#define __ESP32_DRIVER_MCP320X_H__
+#ifndef __ESP32_DRIVER_MCP320X_MCP320X_H__
+#define __ESP32_DRIVER_MCP320X_MCP320X_H__
 
 #ifdef __cplusplus
 extern "C"
