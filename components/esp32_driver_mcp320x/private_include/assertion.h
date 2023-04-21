@@ -13,9 +13,8 @@ extern "C"
  * @param condition Condition to evaluate.
  * @param message Message to be logged if the condition is false.
  * @param return_value Value to be returned if the condition is false.
- * @return If the condition is false the method will return what was
- * passed on @param return_value parameter, otherwise the method will
- * continue.
+ * @return \p return_value if the condition is false, otherwise the
+ * method will continue.
  */
 #define CMP_CHECK(condition, message, return_value)              \
     if (!(condition))                                            \
