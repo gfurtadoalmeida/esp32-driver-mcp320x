@@ -13,11 +13,10 @@ extern "C"
 {
 #endif
 
-#define EXECUTE_WITH_HANDLE(code)               \
-    mcp320x_t *handle;                          \
-    mcp320x_initialize(&VALID_CONFIG, &handle); \
-    code;                                       \
-    mcp320x_free(handle);
+#define EXECUTE_WITH_HANDLE(code)                       \
+    mcp320x_t *handle = mcp320x_install(&VALID_CONFIG); \
+    code;                                               \
+    mcp320x_delete(handle);
 
     // Test hardware setup:
     // VSS = VDD = 5V

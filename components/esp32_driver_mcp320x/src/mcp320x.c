@@ -13,14 +13,13 @@ struct mcp320x_t
     uint16_t reference_voltage;     /*!< Reference voltage, in millivolts. */
 };
 
-mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_t **handle)
+mcp320x_t * mcp320x_install(mcp320x_config_t const *config)
 {
-    CMP_CHECK((config != NULL), "config error(NULL)", MCP320X_ERR_INVALID_CONFIG_HANDLE)
-    CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((config->reference_voltage <= MCP320X_REF_VOLTAGE_MAX), "reference voltage error(>MCP320X_REF_VOLTAGE_MAX)", MCP320X_ERR_INVALID_REFERENCE_VOLTAGE)
-    CMP_CHECK((config->reference_voltage >= MCP320X_REF_VOLTAGE_MIN), "reference voltage error(<MCP320X_REF_VOLTAGE_MIN)", MCP320X_ERR_INVALID_REFERENCE_VOLTAGE)
-    CMP_CHECK((config->clock_speed_hz <= MCP320X_CLOCK_MAX_HZ), "clock speed error(>MCP320X_CLOCK_MAX_HZ)", MCP320X_ERR_INVALID_CLOCK_SPEED)
-    CMP_CHECK((config->clock_speed_hz >= MCP320X_CLOCK_MIN_HZ), "clock speed error(<MCP320X_CLOCK_MIN_HZ)", MCP320X_ERR_INVALID_CLOCK_SPEED)
+    CMP_CHECK((config != NULL), "config error(NULL)", NULL)
+    CMP_CHECK((config->reference_voltage <= MCP320X_REF_VOLTAGE_MAX), "reference voltage error(>MCP320X_REF_VOLTAGE_MAX)", NULL)
+    CMP_CHECK((config->reference_voltage >= MCP320X_REF_VOLTAGE_MIN), "reference voltage error(<MCP320X_REF_VOLTAGE_MIN)", NULL)
+    CMP_CHECK((config->clock_speed_hz <= MCP320X_CLOCK_MAX_HZ), "clock speed error(>MCP320X_CLOCK_MAX_HZ)", NULL)
+    CMP_CHECK((config->clock_speed_hz >= MCP320X_CLOCK_MIN_HZ), "clock speed error(<MCP320X_CLOCK_MIN_HZ)", NULL)
 
     spi_device_interface_config_t dev_cfg = {
         .command_bits = 0,
@@ -36,19 +35,17 @@ mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_t **han
 
     spi_device_handle_t spi_device_handle;
 
-    CMP_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle) == ESP_OK, "failed to add device to SPI bus", MCP320X_ERR_SPI_BUS)
+    CMP_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle) == ESP_OK, "failed to add device to SPI bus", NULL)
 
     mcp320x_t *dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
     dev->spi_handle = spi_device_handle;
     dev->mcp_model = config->device_model;
     dev->reference_voltage = config->reference_voltage;
 
-    *handle = dev;
-
-    return MCP320X_OK;
+    return dev;
 }
 
-mcp320x_err_t mcp320x_free(mcp320x_t *handle)
+mcp320x_err_t mcp320x_delete(mcp320x_t *handle)
 {
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
     CMP_CHECK(spi_bus_remove_device(handle->spi_handle) == ESP_OK, "failed to remove device from bus", MCP320X_ERR_SPI_BUS)
@@ -119,7 +116,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     // of the MCP320X datasheet.
 
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((sample_count > 0), "sample_count error(0)", MCP320X_ERR_INVALID_PARAMETER)
+    CMP_CHECK((sample_count > 0), "sample_count error(0)", MCP320X_ERR_INVALID_SAMPLE_COUNT)
     CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
 
     uint32_t sum = 0;

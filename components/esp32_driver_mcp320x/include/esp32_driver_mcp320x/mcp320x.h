@@ -20,17 +20,14 @@ extern "C"
 
     // Result codes
 
-#define MCP320X_OK ESP_OK                        /** @brief Success. */
-#define MCP320X_ERR_FAIL ESP_FAIL                /** @brief Failure: generic. */
-#define MCP320X_ERR_INVALID_HANDLE 10            /** @brief Failure: invalid handle. */
-#define MCP320X_ERR_INVALID_CONFIG_HANDLE 11     /** @brief Failure: invalid configuration handle. */
-#define MCP320X_ERR_INVALID_VALUE_HANDLE 12      /** @brief Failure: invalid value handle. */
-#define MCP320X_ERR_INVALID_PARAMETER 13         /** @brief Failure: invalid parameter. */
-#define MCP320X_ERR_INVALID_CLOCK_SPEED 20       /** @brief Failure: invalid clock speed. */
-#define MCP320X_ERR_INVALID_CHANNEL 21           /** @brief Failure: invalid channel. */
-#define MCP320X_ERR_INVALID_REFERENCE_VOLTAGE 22 /** @brief Failure: invalid reference voltage. */
-#define MCP320X_ERR_SPI_BUS 30                   /** @brief Failure: error communicating with SPI bus. */
-#define MCP320X_ERR_SPI_BUS_ACQUIRE 31           /** @brief Failure: error communicating with SPI bus to acquire it. */
+#define MCP320X_OK ESP_OK                   /** @brief Success. */
+#define MCP320X_ERR_FAIL ESP_FAIL           /** @brief Failure: generic. */
+#define MCP320X_ERR_INVALID_HANDLE 10       /** @brief Failure: invalid handle. */
+#define MCP320X_ERR_INVALID_VALUE_HANDLE 11 /** @brief Failure: invalid value handle. */
+#define MCP320X_ERR_INVALID_SAMPLE_COUNT 12 /** @brief Failure: invalid sample count. */
+#define MCP320X_ERR_INVALID_CHANNEL 20      /** @brief Failure: invalid channel. */
+#define MCP320X_ERR_SPI_BUS 30              /** @brief Failure: error communicating with SPI bus. */
+#define MCP320X_ERR_SPI_BUS_ACQUIRE 31      /** @brief Failure: error communicating with SPI bus to acquire it. */
 
     /**
      * @typedef mcp320x_err_t
@@ -96,17 +93,16 @@ extern "C"
     /**
      * @brief Adds a MCP320X device to an already configured SPI bus.
      * @param[in] config Pointer to a mcp320x_config_t struct specifying how the device should be initialized.
-     * @param[in,out] handle Pointer to where a MCP320X handle will be stored.
-     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     * @return Valid pointer, otherwise NULL.
      */
-    mcp320x_err_t mcp320x_initialize(mcp320x_config_t const *config, mcp320x_t **handle);
+    mcp320x_t *mcp320x_install(mcp320x_config_t const *config);
 
     /**
      * @brief Removes a MCP320X device from a SPI bus.
      * @param[in] handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_free(mcp320x_t *handle);
+    mcp320x_err_t mcp320x_delete(mcp320x_t *handle);
 
     /**
      * @brief Occupies the SPI bus for continuous readings.
