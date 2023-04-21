@@ -58,10 +58,10 @@ mcp320x_err_t mcp320x_free(mcp320x_t *handle)
     return MCP320X_OK;
 }
 
-mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t wait)
+mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t timeout)
 {
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((spi_device_acquire_bus(handle->spi_handle, wait) == ESP_OK), "bus error(acquire)", MCP320X_ERR_SPI_BUS_ACQUIRE)
+    CMP_CHECK((spi_device_acquire_bus(handle->spi_handle, timeout) == ESP_OK), "bus error(acquire)", MCP320X_ERR_SPI_BUS_ACQUIRE)
 
     return MCP320X_OK;
 }
