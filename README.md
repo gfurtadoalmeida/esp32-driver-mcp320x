@@ -1,11 +1,12 @@
 # ESP32 MCP3204/3208 12-bit ADC Driver
 
 ![GitHub Build Status](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/actions/workflows/build.yml/badge.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x)  
-ESP32 driver for Microchip [MCP3204](https://www.microchip.com/wwwproducts/en/MCP3204) and [MCP3208](https://www.microchip.com/wwwproducts/en/MCP3208) 12-bit ADCs.
+ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP3204) and [MCP3208](https://www.microchip.com/en-us/product/MCP3208) 12-bit ADCs.
 
 ## Characteristics
 
-* Written in **C** using the [ESP-IDF](https://github.com/espressif/esp-idf) framework.
+* ESP-IDF: [v4.4.4](https://docs.espressif.com/projects/esp-idf/en/v4.4.4/esp32/index.html)
+* Written in **C** using just the [ESP-IDF](https://github.com/espressif/esp-idf) framework.
 * Uses the SPI driver instead of raw GPIO manipulation.
 
 ## Documentation
@@ -14,11 +15,11 @@ Everything is on the [wiki](https://github.com/gfurtadoalmeida/esp32-driver-mcp3
 
 ## Example
 
-```c
+```cpp
 #include "esp_log.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
-#include "esp32_driver_mcp320x/esp32_driver_mcp320x.h"
+#include "esp32_driver_mcp320x/mcp320x.h"
 
 void app_main(void)
 {
@@ -49,7 +50,8 @@ void app_main(void)
     
     ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, 
                                          MCP320X_CHANNEL_0, 
-                                         MCP320X_READ_MODE_SINGLE, 
+                                         MCP320X_READ_MODE_SINGLE,
+                                         1000, 
                                          &voltage));
     
     ESP_ERROR_CHECK(mcp320x_release(mcp320x_handle));
