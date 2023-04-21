@@ -7,7 +7,7 @@ ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP
 
 * ESP-IDF: [v4.4.4](https://docs.espressif.com/projects/esp-idf/en/v4.4.4/esp32/index.html)
 * Written in **C** using just the [ESP-IDF](https://github.com/espressif/esp-idf) framework.
-* Uses the SPI driver instead of raw GPIO manipulation.
+* Testable: 20+ tests.
 
 ## Documentation
 
