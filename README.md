@@ -39,16 +39,17 @@ void app_main(void)
         .cs_io_num = GPIO_NUM_5};
 
     mcp320x_t *mcp320x_handle;
+    uint16_t voltage;
 
     ESP_ERROR_CHECK(spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0));
     
     ESP_ERROR_CHECK(mcp320x_initialize(&mcp320x_cfg, &mcp320x_handle));
     
-    ESP_ERROR_CHECK(mcp320x_acquire(handle, portMAX_DELAY));
+    ESP_ERROR_CHECK(mcp320x_acquire(mcp320x_handle, portMAX_DELAY));
     
     ESP_ERROR_CHECK(mcp320x_read_voltage(mcp320x_handle, MCP320X_CHANNEL_0, MCP320X_READ_MODE_SINGLE, &voltage));
     
-    ESP_ERROR_CHECK(mcp320x_release(handle));
+    ESP_ERROR_CHECK(mcp320x_release(mcp320x_handle));
     
     ESP_ERROR_CHECK(mcp320x_free(mcp320x_handle));
 
