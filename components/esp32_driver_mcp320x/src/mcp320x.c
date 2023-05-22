@@ -13,7 +13,7 @@ struct mcp320x_t
     uint16_t reference_voltage;     /*!< Reference voltage, in millivolts. */
 };
 
-mcp320x_t * mcp320x_install(mcp320x_config_t const *config)
+mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
 {
     CMP_CHECK((config != NULL), "config error(NULL)", NULL)
     CMP_CHECK((config->reference_voltage <= MCP320X_REF_VOLTAGE_MAX), "reference voltage error(>MCP320X_REF_VOLTAGE_MAX)", NULL)
@@ -98,7 +98,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     //     -  1 0 1: channel 5
     //     -  1 1 0: channel 6
     //     -  1 1 1: channel 7
-    //   * X: dummy bits, whatever value.
+    //   * X: dummy bits, any value.
     //
     // Response format (rx_data):
     //
@@ -106,7 +106,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     // |-------------|   |-------------------|   |---------------------|
     //
     // Where:
-    //   * X: dummy bits; whatever value.
+    //   * X: dummy bits; any value.
     //   * 0: start bit.
     //   * B [0 1 2 3 4 5 6 7 8 9 10 11]: uint16_t bits, big-endian.
     //     - B11: most significant bit.
@@ -147,30 +147,20 @@ mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
                                    mcp320x_channel_t channel,
                                    mcp320x_read_mode_t read_mode,
                                    uint16_t sample_count,
-                                   uint16_t *value)
+                                   uint16_t *voltage)
 {
-    uint16_t temp_value = 0;
+    uint16_t value_read = 0;
 
-    mcp320x_err_t result = mcp320x_read(handle, channel, read_mode, sample_count, &temp_value);
+    mcp320x_err_t result = mcp320x_read(handle, channel, read_mode, sample_count, &value_read);
 
     if (result != MCP320X_OK)
     {
         return result;
     }
 
-    return mcp320x_convert_to_voltage(handle, temp_value, value);
-}
-
-mcp320x_err_t mcp320x_convert_to_voltage(const mcp320x_t *handle,
-                                         uint16_t value_read,
-                                         uint16_t *value)
-{
-    CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
-
     const float millivolts_per_resolution_step = (float)handle->reference_voltage / MCP320X_RESOLUTION;
 
-    *value = (uint16_t)(value_read * millivolts_per_resolution_step);
+    *voltage = (uint16_t)(value_read * millivolts_per_resolution_step);
 
     return MCP320X_OK;
 }

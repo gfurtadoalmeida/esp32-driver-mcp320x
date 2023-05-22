@@ -124,6 +124,7 @@ extern "C"
     /**
      * @brief Read a value from 0 to 4095 (MCP320X_RESOLUTION-1).
      * @note This function is not thread safe when multiple tasks access the same SPI device.
+     * @note For high \p sample_count it's recommended to aquire the driver through @ref mcp320x_acquire.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
      * @param[in] read_mode Read mode.
@@ -138,34 +139,21 @@ extern "C"
                                uint16_t *value);
 
     /**
-     * @brief Read a value from 0 to 4095 (MCP320X_RESOLUTION-1)
-     * converting it to voltage, in millivolts based on the reference
-     * voltage.
+     * @brief Read a value from the ADC, converting it to voltage,
+     * in millivolts based on the reference voltage.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
      * @param[in] read_mode Read mode.
      * @param[in] sample_count How many samples to take.
-     * @param[out] value Pointer to where the value will be stored.
+     * @param[out] voltage Pointer to where the value will be stored.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
     mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
                                        mcp320x_channel_t channel,
                                        mcp320x_read_mode_t read_mode,
                                        uint16_t sample_count,
-                                       uint16_t *value);
-
-    /**
-     *@brief Convert a raw value to voltage, in millivolts, based on
-     * the reference voltage.
-     * @param[in] handle MCP320X handle.
-     * @param[in] value_read Value read by @ref mcp320x_read function.
-     * @param[out] value Pointer to where the value will be stored.
-     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
-     */
-    mcp320x_err_t mcp320x_convert_to_voltage(const mcp320x_t *handle,
-                                             uint16_t value_read,
-                                             uint16_t *value);
+                                       uint16_t *voltage);
 
 #ifdef __cplusplus
 }
