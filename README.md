@@ -13,6 +13,18 @@ ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP
 
 Everything is on the [wiki](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/wiki).
 
+## Code Size
+
+Build options:
+
+* Compile optimized for size (`CONFIG_COMPILER_OPTIMIZATION_SIZE=y`).
+* Error logging (`CONFIG_LOG_DEFAULT_LEVEL_ERROR=y`).
+
+| DRAM (bss,data) | Flash (code,rodata) |
+|:-:|:-:|
+| 0 B | 1.39 KB |
+
+
 ## Example: Sampling Channel `0`
 
 ```cpp
