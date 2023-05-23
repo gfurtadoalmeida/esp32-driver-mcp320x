@@ -22,107 +22,58 @@ Build options:
 
 | DRAM (bss,data) | Flash (code,rodata) |
 |:-:|:-:|
-| 0 B | 4.63 KB |
+| 0 B | 1.39 KB |
 
 ## Example: Sampling Channel `0`
 
 ```cpp
-#include <stdint.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/uart.h"
+#include "driver/spi_master.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
-#include "esp32_driver_nextion/nextion.h"
-#include "esp32_driver_nextion/page.h"
-#include "esp32_driver_nextion/component.h"
-
-static const char TAG[] = "nextion";
-
-static TaskHandle_t task_handle_user_interface;
-
-static void callback_touch_event(nextion_on_touch_event_t event);
-static void process_callback_queue(void *pvParameters);
+#include "esp32_driver_mcp320x/mcp320x.h"
 
 void app_main(void)
 {
-    // Initialize UART.
-    nextion_t *nextion_handle = nextion_driver_install(UART_NUM_2,
-                                                       115200,
-                                                       GPIO_NUM_17,
-                                                       GPIO_NUM_16);
+    spi_bus_config_t bus_cfg = {
+        .mosi_io_num = GPIO_NUM_23,
+        .miso_io_num = GPIO_NUM_19,
+        .sclk_io_num = GPIO_NUM_18,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 0,
+        .flags = SPICOMMON_BUSFLAG_MASTER};
 
-    // Do basic configuration.
-    nextion_init(nextion_handle);
+    mcp320x_config_t mcp320x_cfg = {
+        .host = SPI3_HOST,
+        .device_model = MCP3204_MODEL,
+        .clock_speed_hz = 1 * 1000 * 1000, // 1 Mhz.
+        .reference_voltage = 5000,         // 5V
+        .cs_io_num = GPIO_NUM_5};
 
-    // Set a callback for touch events.
-    nextion_event_callback_set_on_touch(nextion_handle,
-                                        callback_touch_event);
+    // Bus initialization is up to the developer.
+    spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0);
 
-    // Go to page with id 0.
-    nextion_page_set(nextion_handle, "0");
+    // Add the device to the SPI bus.
+    mcp320x_t *mcp320x_handle = mcp320x_install(&mcp320x_cfg);
+    
+    // Occupy the SPI bus for multiple transactions.
+    mcp320x_acquire(mcp320x_handle, portMAX_DELAY);
+    
+    uint16_t voltage = 0;
 
-    // Start a task that will handle touch notifications.
-    xTaskCreate(process_callback_queue,
-                "user_interface",
-                2048,
-                (void *)nextion_handle,
-                5,
-                &task_handle_user_interface);
-
-    ESP_LOGI(TAG, "waiting for button to be pressed");
-
-    vTaskDelay(portMAX_DELAY);
-
-    // Will never reach here.
-    // It is just to show how to delete the driver.
-
-    vTaskDelete(task_handle_user_interface);
-
+    // Read voltage, sampling 1000 times.
+    mcp320x_read_voltage(mcp320x_handle, 
+                         MCP320X_CHANNEL_0, 
+                         MCP320X_READ_MODE_SINGLE,
+                         1000, 
+                         &voltage);
+    
+    // Unoccupy the SPI bus.
+    mcp320x_release(mcp320x_handle);
+    
     // Free resources.
-    nextion_driver_delete(nextion_handle);
-}
+    mcp320x_delete(mcp320x_handle);
 
-void callback_touch_event(nextion_on_touch_event_t event)
-{
-    if (event.page_id == 0
-        && event.component_id == 5
-        && event.state == NEXTION_TOUCH_RELEASED)
-    {
-        ESP_LOGI(TAG, "button pressed");
-
-        xTaskNotify(task_handle_user_interface,
-                    event.component_id,
-                    eSetValueWithOverwrite);
-    }
-}
-
-void process_callback_queue(void *pvParameters)
-{
-    const uint8_t MAX_TEXT_LENGTH = 50;
-
-    nextion_t *nextion_handle = (nextion_t *)pvParameters;
-    char text_buffer[MAX_TEXT_LENGTH];
-    size_t text_length = MAX_TEXT_LENGTH;
-    int32_t number;
-
-    for (;;)
-    {
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-        // Get the text value from a component.
-        nextion_component_get_text(nextion_handle,
-                                   "value_text",
-                                   text_buffer,
-                                   &text_length);
-
-        // Get the integer value from a component.
-        nextion_component_get_value(nextion_handle,
-                                    "value_number",
-                                    &number);
-
-        ESP_LOGI(TAG, "text: %s", text_buffer);
-        ESP_LOGI(TAG, "number: %d", number);
-    }
+    ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
 }
 ```
