@@ -24,7 +24,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
     spi_device_interface_config_t dev_cfg = {
         .command_bits = 0,
         .address_bits = 0,
-        .clock_speed_hz = config->clock_speed_hz,
+        .clock_speed_hz = (int)config->clock_speed_hz,
         .mode = 0,
         .queue_size = 1,
         .spics_io_num = config->cs_io_num,
