@@ -92,7 +92,7 @@ extern "C"
 
     /**
      * @brief Add a MCP320X device to an already configured SPI bus.
-     * @param[in] config Pointer to a mcp320x_config_t struct specifying how the device should be initialized.
+     * @param[in] config Pointer to a @ref mcp320x_config_t struct specifying how the device should be initialized.
      * @return Valid pointer, otherwise NULL.
      */
     mcp320x_t *mcp320x_install(mcp320x_config_t const *config);
@@ -108,7 +108,7 @@ extern "C"
      * @brief Occupy the SPI bus for continuous readings.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
-     * @param[in] timeout Time to wait before the the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
+     * @param[in] timeout Time to wait before the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
     mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t timeout);
@@ -122,9 +122,9 @@ extern "C"
     mcp320x_err_t mcp320x_release(mcp320x_t *handle);
 
     /**
-     * @brief Read a value from 0 to 4095 (MCP320X_RESOLUTION-1).
+     * @brief Read a digital code from 0 to 4096 (MCP320X_RESOLUTION).
      * @note This function is not thread safe when multiple tasks access the same SPI device.
-     * @note For high \p sample_count it's recommended to aquire the driver through @ref mcp320x_acquire.
+     * @note For high \p sample_count it's recommended to aquire the SPI bus through @ref mcp320x_acquire.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
      * @param[in] read_mode Read mode.
@@ -139,8 +139,7 @@ extern "C"
                                uint16_t *value);
 
     /**
-     * @brief Read a value from the ADC, converting it to voltage,
-     * in millivolts based on the reference voltage.
+     * @brief Read a voltage in millivolts.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
