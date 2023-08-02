@@ -8,9 +8,9 @@
  */
 struct mcp320x_t
 {
-    spi_device_handle_t spi_handle; /*!< SPI device handle. */
-    mcp320x_model_t mcp_model;      /*!< Device model. */
-    uint16_t reference_voltage;     /*!< Reference voltage, in millivolts. */
+    spi_device_handle_t spi_handle; /** @brief SPI device handle. */
+    mcp320x_model_t mcp_model;      /** @brief Device model. */
+    uint16_t reference_voltage;     /** @brief Reference voltage, in millivolts. */
 };
 
 mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
@@ -78,7 +78,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                            uint16_t sample_count,
                            uint16_t *value)
 {
-    // Request format (tx_data), eight bits aligned.
+    // Request format (tx_data) is eight bits aligned.
     //
     // 0 0 0 0 0 1 SG/DIFF D2 _ D1 D0 X X X X X X _ X X X X X X X X
     // |--------------------|   |---------------|   |-------------|
@@ -108,9 +108,11 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     // Where:
     //   * X: dummy bits; any value.
     //   * 0: start bit.
-    //   * B [0 1 2 3 4 5 6 7 8 9 10 11]: uint16_t bits, big-endian.
+    //   * B [0 1 2 3 4 5 6 7 8 9 10 11]: digital output code, uint16_t bits, big-endian.
     //     - B11: most significant bit.
     //     - B0: least significant bit.
+    //
+    // Digital output code = (Vin x MCP320X_RESOLUTION) / Vref
     //
     // More information on section "6.1 Using the MCP3204/3208 with Microcontroller (MCU) SPI Ports"
     // of the MCP320X datasheet.
@@ -122,7 +124,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     uint32_t sum = 0;
     spi_transaction_t transaction = {
         .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
-        .length = 24 // 24 bits.
+        .length = 24
     };
 
     transaction.tx_data[0] = (uint8_t)((1 << 2) | (read_mode << 1) | ((channel & 4) >> 2));
@@ -133,12 +135,32 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     {
         CMP_CHECK(spi_device_transmit(handle->spi_handle, &transaction) == ESP_OK, "communication error(transmit)", MCP320X_ERR_SPI_BUS)
 
-        // As bits 5-7, from rx_data[1], can be any value (bit 4 is always zero),
-        // AND it with 15 (1111) to zero them.
-        sum += ((transaction.rx_data[1] & 15) << 8) | transaction.rx_data[2];
+        // Result logic, taking the following sequence as example:
+        //
+        // 0 1 0 0 0 1 0 0 _ 1 0 1 0 0 1 0 0 _ 1 1 1 1 0 1 1 0 = 1270
+        // |--- rx[0] ---|   |--- rx[1] ---|   |--- rx[2] ---|
+        //
+        // 1) As bits 5-7 from rx_data[1] can be any value (bit 4 is always zero),
+        //    AND it with 15 (00001111) to zero them.
+        //    > first_part  = 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0
+        //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+        //
+        // 2) Move rx_data[1] value 8 bits to the left to open space for second_part.
+        //    > first_part  = 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+        //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+        //
+        // 3) Concat (ORing) first_part with second_part.
+        //    > first_part  = 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+        //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+        //    > result      = 0 0 0 0 0 1 0 0 1 1 1 1 0 1 1 0
+
+        const uint16_t first_part = transaction.rx_data[1];
+        const uint16_t second_part = transaction.rx_data[2];
+
+        sum += ((first_part & 15) << 8) | second_part;
     }
 
-    *value = (uint16_t)sum / sample_count;
+    *value = (uint16_t)(sum / sample_count);
 
     return MCP320X_OK;
 }
