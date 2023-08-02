@@ -24,14 +24,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    # This is needed only if you are working on the
-    # esp32-project-template project; remove this step
-    # if you are using this project as a template.
-    - name: Run Rename-Project.ps1
-      if: ${{env.run_rename_project_script}}
-      shell: pwsh
-      run: ./Rename-Project.ps1 '${{github.workspace}}' esp32-project-template
-
     - name: Docker Login
       uses: docker/login-action@v2.1.0
       with:
