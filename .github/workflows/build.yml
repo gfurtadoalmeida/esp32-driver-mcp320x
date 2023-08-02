@@ -12,7 +12,6 @@ on:
   workflow_dispatch:
 
 env:
-  run_rename_project_script: ${{true}}
   esp_docker_tag: v5.1
 
 jobs:
