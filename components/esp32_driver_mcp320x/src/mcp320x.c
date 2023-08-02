@@ -8,9 +8,9 @@
  */
 struct mcp320x_t
 {
-    spi_device_handle_t spi_handle; /** @brief SPI device handle. */
-    mcp320x_model_t mcp_model;      /** @brief Device model. */
-    uint16_t reference_voltage;     /** @brief Reference voltage, in millivolts. */
+    spi_device_handle_t spi_handle;       /** @brief SPI device handle. */
+    mcp320x_model_t mcp_model;            /** @brief Device model. */
+    float millivolts_per_resolution_step; /** @brief Millivolts per resolution step (Vref / MCP320X_RESOLUTION). */
 };
 
 mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
@@ -40,7 +40,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
     mcp320x_t *dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
     dev->spi_handle = spi_device_handle;
     dev->mcp_model = config->device_model;
-    dev->reference_voltage = config->reference_voltage;
+    dev->millivolts_per_resolution_step = config->reference_voltage / MCP320X_RESOLUTION;
 
     return dev;
 }
@@ -124,8 +124,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     uint32_t sum = 0;
     spi_transaction_t transaction = {
         .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
-        .length = 24
-    };
+        .length = 24};
 
     transaction.tx_data[0] = (uint8_t)((1 << 2) | (read_mode << 1) | ((channel & 4) >> 2));
     transaction.tx_data[1] = (uint8_t)(channel << 6);
@@ -180,9 +179,7 @@ mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
         return result;
     }
 
-    const float millivolts_per_resolution_step = (float)handle->reference_voltage / MCP320X_RESOLUTION;
-
-    *voltage = (uint16_t)(value_read * millivolts_per_resolution_step);
+    *voltage = (uint16_t)(value_read * handle->millivolts_per_resolution_step);
 
     return MCP320X_OK;
 }
