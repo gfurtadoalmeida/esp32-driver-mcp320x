@@ -40,7 +40,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
     mcp320x_t *dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
     dev->spi_handle = spi_device_handle;
     dev->mcp_model = config->device_model;
-    dev->millivolts_per_resolution_step = config->reference_voltage / MCP320X_RESOLUTION;
+    dev->millivolts_per_resolution_step = (float)config->reference_voltage / (float)MCP320X_RESOLUTION;
 
     return dev;
 }
