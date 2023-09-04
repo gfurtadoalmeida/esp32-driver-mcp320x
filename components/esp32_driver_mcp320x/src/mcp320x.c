@@ -78,6 +78,15 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                            uint16_t sample_count,
                            uint16_t *value)
 {
+    CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
+    CMP_CHECK((sample_count > 0), "sample_count error(0)", MCP320X_ERR_INVALID_SAMPLE_COUNT)
+    CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
+
+    uint32_t sum = 0;
+    spi_transaction_t transaction = {
+        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
+        .length = 24};
+
     // Request format (tx_data) is eight bits aligned.
     //
     // 0 0 0 0 0 1 SG/DIFF D2 _ D1 D0 X X X X X X _ X X X X X X X X
@@ -99,32 +108,6 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     //     -  1 1 0: channel 6
     //     -  1 1 1: channel 7
     //   * X: dummy bits, any value.
-    //
-    // Response format (rx_data):
-    //
-    // X X X X X X X X _ X X X 0 B11 B10 B9 B8 _ B7 B6 B5 B4 B3 B2 B1 B0
-    // |-------------|   |-------------------|   |---------------------|
-    //
-    // Where:
-    //   * X: dummy bits; any value.
-    //   * 0: start bit.
-    //   * B [0 1 2 3 4 5 6 7 8 9 10 11]: digital output code, uint16_t bits, big-endian.
-    //     - B11: most significant bit.
-    //     - B0: least significant bit.
-    //
-    // Digital output code = (Vin x MCP320X_RESOLUTION) / Vref
-    //
-    // More information on section "6.1 Using the MCP3204/3208 with Microcontroller (MCU) SPI Ports"
-    // of the MCP320X datasheet.
-
-    CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((sample_count > 0), "sample_count error(0)", MCP320X_ERR_INVALID_SAMPLE_COUNT)
-    CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
-
-    uint32_t sum = 0;
-    spi_transaction_t transaction = {
-        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
-        .length = 24};
 
     transaction.tx_data[0] = (uint8_t)((1 << 2) | (read_mode << 1) | ((channel & 4) >> 2));
     transaction.tx_data[1] = (uint8_t)(channel << 6);
@@ -132,8 +115,23 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
 
     for (uint16_t i = 0; i < sample_count; i++)
     {
-        CMP_CHECK(spi_device_transmit(handle->spi_handle, &transaction) == ESP_OK, "communication error(transmit)", MCP320X_ERR_SPI_BUS)
+        CMP_CHECK(spi_device_polling_transmit(handle->spi_handle, &transaction) == ESP_OK, "communication error(transmit)", MCP320X_ERR_SPI_BUS)
 
+        // Response format (rx_data):
+        //
+        // X X X X X X X X _ X X X 0 B11 B10 B9 B8 _ B7 B6 B5 B4 B3 B2 B1 B0
+        // |-------------|   |-------------------|   |---------------------|
+        //
+        // Where:
+        //   * X: dummy bits; any value.
+        //   * 0: start bit.
+        //   * B [0 1 2 3 4 5 6 7 8 9 10 11]: digital output code, uint16_t bits, big-endian.
+        //     - B11: most significant bit.
+        //     - B0: least significant bit.
+        //
+        // More information on section "6.1 Using the MCP3204/3208 with Microcontroller (MCU) SPI Ports"
+        // of the MCP320X datasheet.
+        //
         // Result logic, taking the following sequence as example:
         //
         // 0 1 0 0 0 1 0 0 _ 1 0 1 0 0 1 0 0 _ 1 1 1 1 0 1 1 0 = 1270
