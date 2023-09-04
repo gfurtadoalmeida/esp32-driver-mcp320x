@@ -35,7 +35,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
 
     spi_device_handle_t spi_device_handle;
 
-    CMP_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle) == ESP_OK, "failed to add device to SPI bus", NULL)
+    CMP_CHECK(spi_bus_add_device(config->host, &dev_cfg, &spi_device_handle) == ESP_OK, "bus error(spi_bus_add_device)", NULL)
 
     mcp320x_t *dev = (mcp320x_t *)malloc(sizeof(mcp320x_t));
     dev->spi_handle = spi_device_handle;
@@ -48,7 +48,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
 mcp320x_err_t mcp320x_delete(mcp320x_t *handle)
 {
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK(spi_bus_remove_device(handle->spi_handle) == ESP_OK, "failed to remove device from bus", MCP320X_ERR_SPI_BUS)
+    CMP_CHECK(spi_bus_remove_device(handle->spi_handle) == ESP_OK, "bus error(spi_bus_remove_device)", MCP320X_ERR_SPI_BUS)
 
     free(handle);
 
@@ -58,7 +58,7 @@ mcp320x_err_t mcp320x_delete(mcp320x_t *handle)
 mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t timeout)
 {
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
-    CMP_CHECK((spi_device_acquire_bus(handle->spi_handle, timeout) == ESP_OK), "bus error(acquire)", MCP320X_ERR_SPI_BUS_ACQUIRE)
+    CMP_CHECK((spi_device_acquire_bus(handle->spi_handle, timeout) == ESP_OK), "device error(spi_device_acquire_bus)", MCP320X_ERR_SPI_BUS_ACQUIRE)
 
     return MCP320X_OK;
 }
@@ -130,7 +130,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
 
     for (uint16_t i = 0; i < sample_count; i++)
     {
-        CMP_CHECK(spi_device_polling_transmit(handle->spi_handle, &transaction) == ESP_OK, "communication error(transmit)", MCP320X_ERR_SPI_BUS)
+        CMP_CHECK(spi_device_polling_transmit(handle->spi_handle, &transaction) == ESP_OK, "device error(spi_device_polling_transmit)", MCP320X_ERR_SPI_BUS)
 
         // Response format (rx_data):
         //
