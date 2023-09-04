@@ -94,6 +94,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                            uint16_t *value)
 {
     CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
+    CMP_CHECK(((int)channel < (int)handle->mcp_model), "channel error(invalid)", MCP320X_ERR_INVALID_CHANNEL)
     CMP_CHECK((sample_count > 0), "sample_count error(0)", MCP320X_ERR_INVALID_SAMPLE_COUNT)
     CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
 
