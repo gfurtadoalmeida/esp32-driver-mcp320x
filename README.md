@@ -40,8 +40,14 @@ void app_main(void)
         .sclk_io_num = GPIO_NUM_18,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        .max_transfer_sz = 0,
-        .flags = SPICOMMON_BUSFLAG_MASTER};
+        .data4_io_num = -1,
+        .data5_io_num = -1,
+        .data6_io_num = -1,
+        .data7_io_num = -1,
+        .max_transfer_sz = 3, // 24 bits.
+        .flags = SPICOMMON_BUSFLAG_MASTER | SPICOMMON_BUSFLAG_IOMUX_PINS,
+        .isr_cpu_id = INTR_CPU_ID_AUTO,
+        .intr_flags = ESP_INTR_FLAG_LEVEL3};
 
     mcp320x_config_t mcp320x_cfg = {
         .host = SPI3_HOST,
