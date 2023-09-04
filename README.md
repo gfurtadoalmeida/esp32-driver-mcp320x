@@ -45,7 +45,7 @@ void app_main(void)
         .data6_io_num = -1,
         .data7_io_num = -1,
         .max_transfer_sz = 3, // 24 bits.
-        .flags = SPICOMMON_BUSFLAG_MASTER | SPICOMMON_BUSFLAG_IOMUX_PINS,
+        .flags = SPICOMMON_BUSFLAG_MASTER,
         .isr_cpu_id = INTR_CPU_ID_AUTO,
         .intr_flags = ESP_INTR_FLAG_LEVEL3};
 
