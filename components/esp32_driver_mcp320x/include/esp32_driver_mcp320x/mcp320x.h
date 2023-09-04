@@ -122,6 +122,15 @@ extern "C"
     mcp320x_err_t mcp320x_release(mcp320x_t *handle);
 
     /**
+     * @brief Get the actual working frequency, in Hertz.
+     * @param[in] handle MCP320X handle.
+     * @param[out] frequency_hz Pointer to where the frequency in Hertz will be stored.
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_get_actual_freq(mcp320x_t *handle,
+                                          uint32_t *frequency_hz);
+
+    /**
      * @brief Read a digital code from 0 to 4096 (MCP320X_RESOLUTION).
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @note For high \p sample_count it's recommended to aquire the SPI bus through @ref mcp320x_acquire.

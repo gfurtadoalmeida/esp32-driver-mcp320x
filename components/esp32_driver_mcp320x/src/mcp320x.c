@@ -72,6 +72,21 @@ mcp320x_err_t mcp320x_release(mcp320x_t *handle)
     return MCP320X_OK;
 }
 
+mcp320x_err_t mcp320x_get_actual_freq(mcp320x_t *handle,
+                                      uint32_t *frequency_hz)
+{
+    CMP_CHECK((handle != NULL), "handle error(NULL)", MCP320X_ERR_INVALID_HANDLE)
+    CMP_CHECK((frequency_hz != NULL), "frequency_hz error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
+
+    int calculated_freq_khz;
+
+    CMP_CHECK((spi_device_get_actual_freq(handle->spi_handle, &calculated_freq_khz) == ESP_OK), "device error(spi_device_get_actual_freq)", MCP320X_ERR_FAIL)
+
+    *frequency_hz = (uint32_t)calculated_freq_khz * 1000;
+
+    return MCP320X_OK;
+}
+
 mcp320x_err_t mcp320x_read(mcp320x_t *handle,
                            mcp320x_channel_t channel,
                            mcp320x_read_mode_t read_mode,
