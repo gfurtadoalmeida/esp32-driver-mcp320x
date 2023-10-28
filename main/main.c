@@ -38,18 +38,21 @@ void app_main(void)
 
     uint16_t voltage = 0;
 
-    // Read voltage, sampling 1000 times.
-    mcp320x_read_voltage(mcp320x_handle,
-                         MCP320X_CHANNEL_0,
-                         MCP320X_READ_MODE_SINGLE,
-                         1000,
-                         &voltage);
+    for (size_t i = 0; i < 10; i++)
+    {
+        // Read voltage, sampling 1000 times.
+        mcp320x_read_voltage(mcp320x_handle,
+                             MCP320X_CHANNEL_0,
+                             MCP320X_READ_MODE_SINGLE,
+                             1000,
+                             &voltage);
+
+        ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
+    }
 
     // Unoccupy the SPI bus.
     mcp320x_release(mcp320x_handle);
 
     // Free resources.
     mcp320x_delete(mcp320x_handle);
-
-    ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
 }

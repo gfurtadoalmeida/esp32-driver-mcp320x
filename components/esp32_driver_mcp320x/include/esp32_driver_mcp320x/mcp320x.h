@@ -106,15 +106,17 @@ extern "C"
 
     /**
      * @brief Occupy the SPI bus for continuous readings.
+     * @note The bus must be released using the @ref mcp320x_release function.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
-     * @param[in] timeout Time to wait before the bus is occupied by the device. Currently MUST set to portMAX_DELAY.
+     * @param[in] timeout Time to wait before the bus is occupied by the device. Currently MUST BE set to portMAX_DELAY.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
     mcp320x_err_t mcp320x_acquire(mcp320x_t *handle, TickType_t timeout);
 
     /**
      * @brief Release the SPI bus occupied by the ADC. All other devices on the bus can start sending transactions.
+     * @note The bus must be acquired using the @ref mcp320x_acquire function.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
@@ -132,8 +134,8 @@ extern "C"
 
     /**
      * @brief Read a digital code from 0 to 4096 (MCP320X_RESOLUTION).
+     * @note For high \p sample_count it's recommended to aquire the SPI bus using the @ref mcp320x_acquire function.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
-     * @note For high \p sample_count it's recommended to aquire the SPI bus through @ref mcp320x_acquire.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
      * @param[in] read_mode Read mode.
@@ -148,7 +150,7 @@ extern "C"
                                uint16_t *value);
 
     /**
-     * @brief Read a voltage in millivolts.
+     * @brief Read a voltage, in millivolts.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
