@@ -51,7 +51,9 @@ jobs:
 
     - name: Create Zip
       shell: bash
-      run: zip -r ${{env.ZIP_NAME}} 'components/esp32_driver_mcp320x/'
+      run: |
+        cd components
+        zip -r ../${{env.ZIP_NAME}} esp32_driver_mcp320x
 
     - name: Publish
       uses: ncipollo/release-action@v1
