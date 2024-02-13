@@ -11,7 +11,7 @@ ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP
 
 ## Documentation
 
-Everything is on the [wiki](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/wiki).
+Everything is at the [docs](/docs) folder.
 
 ## Code Size
 
