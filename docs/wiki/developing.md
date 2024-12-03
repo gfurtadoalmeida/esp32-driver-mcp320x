@@ -18,7 +18,7 @@ Run the ```project.ps1 build``` command on the root folder.
 
 ## Debugging
 
-In the [.debug](../.debug) folder you'll find interface configuration files for debug boards. Choose one and copy it to the ```%IDF_TOOLS_PATH%\tools\openocd-esp32\{version}\openocd-esp32\share\openocd\scripts\interface``` folder.
+In the [.debug](../../.debug) folder you'll find interface configuration files for debug boards. Choose one and copy it to the ```%IDF_TOOLS_PATH%\tools\openocd-esp32\{version}\openocd-esp32\share\openocd\scripts\interface``` folder.
 
 ### Boards
 
