@@ -1,11 +1,12 @@
 # ESP32 - MCP3204/3208 12-bit ADC Driver
 
-![GitHub Build Status](https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/actions/workflows/release.yml/badge.svg) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=bugs)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=esp32_driver_mcp320x)  
+[![GitHub Release Status][git-bagdge-release]][git-release] [![Bugs][sonar-badge-bugs]][sonar-home] [![Code Smells][sonar-badge-smells]][sonar-home] [![Security Rating][sonar-badge-security]][sonar-home] [![Quality Gate Status][sonar-badge-quality]][sonar-home]  
+
 ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP3204) and [MCP3208](https://www.microchip.com/en-us/product/MCP3208) 12-bit ADCs.
 
 ## Characteristics
 
-* ESP-IDF: [v5.1](https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32/index.html)
+* ESP-IDF: [v5.3](https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32/index.html)
 * Written in **C** using just the [ESP-IDF Framework](https://github.com/espressif/esp-idf).
 * Testable: 20+ tests.
 
@@ -86,3 +87,15 @@ void app_main(void)
     mcp320x_delete(mcp320x_handle);
 }
 ```
+
+## Contributing
+
+To contribute to this project make sure to read our [CONTRIBUTING.md](/docs/CONTRIBUTING.md) file.
+
+[git-bagdge-release]: https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/actions/workflows/release.yml/badge.svg
+[git-release]: https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/releases
+[sonar-badge-bugs]: https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=bugs
+[sonar-badge-quality]: https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=alert_status
+[sonar-badge-security]: https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=security_rating
+[sonar-badge-smells]: https://sonarcloud.io/api/project_badges/measure?project=esp32_driver_mcp320x&metric=code_smells
+[sonar-home]: https://sonarcloud.io/project/overview?id=esp32_driver_mcp320x
