@@ -25,7 +25,7 @@ void app_main(void)
         .device_model = MCP3204_MODEL,
         .clock_speed_hz = 1 * 1000 * 1000, // 1 Mhz.
         .reference_voltage = 5000,         // 5V
-        .cs_io_num = GPIO_NUM_5};
+        .cs_io_num = GPIO_NUM_22};
 
     // Bus initialization is up to the developer.
     spi_bus_initialize(mcp320x_cfg.host, &bus_cfg, 0);
