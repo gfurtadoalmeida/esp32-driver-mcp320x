@@ -8,7 +8,7 @@ TEST_CASE("Cannot init with null configuration", "[init]")
 {
     mcp320x_t *handle = mcp320x_install(NULL);
 
-    TEST_ASSERT_NULL(handle)
+    TEST_ASSERT_NULL(handle);
 }
 
 TEST_CASE("Cannot init with null handle", "[init]")
