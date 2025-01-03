@@ -9,15 +9,15 @@ void app_main(void)
         .mosi_io_num = GPIO_NUM_23,
         .miso_io_num = GPIO_NUM_19,
         .sclk_io_num = GPIO_NUM_18,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .data4_io_num = -1,
-        .data5_io_num = -1,
-        .data6_io_num = -1,
-        .data7_io_num = -1,
+        .quadwp_io_num = GPIO_NUM_NC,
+        .quadhd_io_num = GPIO_NUM_NC,
+        .data4_io_num = GPIO_NUM_NC,
+        .data5_io_num = GPIO_NUM_NC,
+        .data6_io_num = GPIO_NUM_NC,
+        .data7_io_num = GPIO_NUM_NC,
         .max_transfer_sz = 3, // 24 bits.
         .flags = SPICOMMON_BUSFLAG_MASTER,
-        .isr_cpu_id = INTR_CPU_ID_AUTO,
+        .isr_cpu_id = ESP_INTR_CPU_AFFINITY_AUTO,
         .intr_flags = ESP_INTR_FLAG_LEVEL3};
 
     mcp320x_config_t mcp320x_cfg = {
@@ -41,11 +41,11 @@ void app_main(void)
     for (size_t i = 0; i < 10; i++)
     {
         // Read voltage, sampling 1000 times.
-        mcp320x_read_voltage(mcp320x_handle,
-                             MCP320X_CHANNEL_0,
-                             MCP320X_READ_MODE_SINGLE,
-                             1000,
-                             &voltage);
+        mcp320x_sample_voltage(mcp320x_handle,
+                               MCP320X_CHANNEL_0,
+                               MCP320X_READ_MODE_SINGLE,
+                               1000,
+                               &voltage);
 
         ESP_LOGI("mcp320x", "Voltage: %d mV", voltage);
     }
