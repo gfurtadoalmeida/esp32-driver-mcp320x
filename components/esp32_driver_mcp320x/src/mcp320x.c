@@ -25,7 +25,7 @@ mcp320x_t *mcp320x_install(mcp320x_config_t const *config)
         .command_bits = 0,
         .address_bits = 0,
         .dummy_bits = 0,
-        .mode = 0,
+        .mode = 0, // Clock idle: low, clock phase: leading, data write: CS on and CLK fall, data read: CS on and CLK rise.
         .clock_source = SPI_CLK_SRC_DEFAULT,
         .duty_cycle_pos = 128,
         .cs_ena_pretrans = 0,
@@ -102,23 +102,23 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
 
     spi_transaction_t transaction = {
-        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
+        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA | SPI_TRANS_MODE_OCT,
         .cmd = 0,
         .addr = 0,
         .length = 24};
 
     // Request format (tx_data) is eight bits aligned.
     //
-    // 0 0 0 0 0 1 SG/DIFF D2 _ D1 D0 X X X X X X _ X X X X X X X X
-    // |--------------------|   |---------------|   |-------------|
+    // 0 0 0 0 0 1 MODE C2 _ C1 C0 S N D D D D _ D D D D D D D D
+    // |-----------------|   |---------------|   |-------------|
     //
     // Where:
-    //   * 0: dummy bits, must be zero.
+    //   * 0: filler bits, must be zero.
     //   * 1: start bit.
-    //   * SG/DIFF:
+    //   * MODE:
     //     - 0: differential conversion.
     //     - 1: single conversion.
-    //   * D [0 1 2]:
+    //   * C [0 1 2]:
     //     -  0 0 0: channel 0
     //     -  0 0 1: channel 1
     //     -  0 1 0: channel 2
@@ -127,9 +127,11 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     //     -  1 0 1: channel 5
     //     -  1 1 0: channel 6
     //     -  1 1 1: channel 7
-    //   * X: dummy bits, any value.
+    //   * S: sample bit because one more clock is required to complete the sample and hold period.
+    //   * N: low null bit.
+    //   * D: data output bits.
 
-    transaction.tx_data[0] = (uint8_t)((1 << 2) | (read_mode << 1) | ((channel & 4) >> 2));
+    transaction.tx_data[0] = (uint8_t)(0b00000100 | (read_mode << 1) | (channel >> 2));
     transaction.tx_data[1] = (uint8_t)(channel << 6);
     transaction.tx_data[2] = 0;
 
@@ -152,28 +154,27 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     //
     // Result logic, taking the following sequence as example:
     //
-    // 0 1 0 0 0 1 0 0 _ 1 0 1 0 0 1 0 0 _ 1 1 1 1 0 1 1 0 = 1270
-    // |--- rx[0] ---|   |--- rx[1] ---|   |--- rx[2] ---|
-    //      dummy          first part        second part
+    // 1270 = X X X X X X X X _ X X X X 0 1 0 0 _ 1 1 1 1 0 1 1 0
+    //        |--- rx[0] ---|   |--- rx[1] ---|   |--- rx[2] ---|
+    //             dummy          first part        second part
     //
-    // 1) As bits 5-7 from rx_data[1] can be any value (bit 4 is always zero),
-    //    AND it with 15 (00001111) to zero them.
-    //    > first_part  = 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0
-    //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+    // 1) Move first_part 8 bits to the left to open space for second_part.
+    //    > first_part  = X X X X X 1 0 0 0 0 0 0 0 0 0 0
     //
-    // 2) Move rx_data[1] value 8 bits to the left to open space for second_part.
-    //    > first_part  = 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+    // 2) Concat first_part with second_part.
+    //    > first_part  = X X X X X 1 0 0 0 0 0 0 0 0 0 0
     //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+    //    > result      = X X X X X 1 0 0 1 1 1 1 0 1 1 0
     //
-    // 3) Concat (ORing) first_part with second_part.
-    //    > first_part  = 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
-    //    > second_part = 0 0 0 0 0 0 0 0 1 1 1 1 0 1 1 0
+    // 3) Clear dummy bits.
+    //    > result      = X X X X X 1 0 0 1 1 1 1 0 1 1 0
+    //    > mask        = 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1
     //    > result      = 0 0 0 0 0 1 0 0 1 1 1 1 0 1 1 0
 
     const uint16_t first_part = transaction.rx_data[1];
     const uint16_t second_part = transaction.rx_data[2];
 
-    *value = (uint16_t)(((first_part & 15) << 8) | second_part);
+    *value = ((first_part << 8) | second_part) & 0b0000111111111111;
 
     return MCP320X_OK;
 }
