@@ -20,10 +20,16 @@ void app_main(void)
         .mosi_io_num = GPIO_MOSI,
         .miso_io_num = GPIO_MISO,
         .sclk_io_num = GPIO_SCLK,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .max_transfer_sz = 0,
-        .flags = SPICOMMON_BUSFLAG_MASTER};
+        .quadwp_io_num = GPIO_NUM_NC,
+        .quadhd_io_num = GPIO_NUM_NC,
+        .data4_io_num = GPIO_NUM_NC,
+        .data5_io_num = GPIO_NUM_NC,
+        .data6_io_num = GPIO_NUM_NC,
+        .data7_io_num = GPIO_NUM_NC,
+        .max_transfer_sz = 3, // 24 bits.
+        .flags = SPICOMMON_BUSFLAG_MASTER,
+        .isr_cpu_id = ESP_INTR_CPU_AFFINITY_AUTO,
+        .intr_flags = ESP_INTR_FLAG_LEVEL3};
 
     spi_bus_initialize(SPI3_HOST, &bus_cfg, 0);
 

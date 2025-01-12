@@ -12,11 +12,11 @@ extern "C"
 
     // Constants
 
-#define MCP320X_RESOLUTION 4096      /** @brief ADC resolution = 12 bits = 2^12 = 4096 steps */
-#define MCP320X_CLOCK_MIN_HZ 10000   /** @brief Minimum recommended clock speed for a reliable reading = 10Khz. */
-#define MCP320X_CLOCK_MAX_HZ 2000000 /** @brief Maximum clock speed supported = 2Mhz at 5V. */
-#define MCP320X_REF_VOLTAGE_MIN 250  /** @brief Minimum reference voltage, in mV = 250mV. */
-#define MCP320X_REF_VOLTAGE_MAX 7000 /** @brief Maximum reference voltage, in mV = 7000mV. The max safe voltage is 5000mV. */
+#define MCP320X_RESOLUTION 4096                /** @brief ADC resolution = 12 bits = 2^12 = 4096 steps */
+#define MCP320X_CLOCK_MIN_HZ (10 * 1000)       /** @brief Minimum recommended clock speed for a reliable reading = 10Khz. */
+#define MCP320X_CLOCK_MAX_HZ (2 * 1000 * 1000) /** @brief Maximum clock speed supported = 2Mhz at 5V. */
+#define MCP320X_REF_VOLTAGE_MIN 250            /** @brief Minimum reference voltage, in mV = 250mV. */
+#define MCP320X_REF_VOLTAGE_MAX 7000           /** @brief Maximum reference voltage, in mV = 7000mV. The max safe voltage is 5000mV. */
 
     // Result codes
 
@@ -129,11 +129,38 @@ extern "C"
      * @param[out] frequency_hz Pointer to where the frequency in Hertz will be stored.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_get_actual_freq(mcp320x_t *handle,
-                                          uint32_t *frequency_hz);
+    mcp320x_err_t mcp320x_get_actual_freq(mcp320x_t *handle, uint32_t *frequency_hz);
 
     /**
      * @brief Read a digital code from 0 to 4096 (MCP320X_RESOLUTION).
+     * @note This function is not thread safe when multiple tasks access the same SPI device.
+     * @param[in] handle MCP320X handle.
+     * @param[in] channel Channel to read from.
+     * @param[in] read_mode Read mode.
+     * @param[out] value Pointer to where the value will be stored.
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_read(mcp320x_t *handle,
+                               mcp320x_channel_t channel,
+                               mcp320x_read_mode_t read_mode,
+                               uint16_t *value);
+
+    /**
+     * @brief Read a voltage, in millivolts.
+     * @note This function is not thread safe when multiple tasks access the same SPI device.
+     * @param[in] handle MCP320X handle.
+     * @param[in] channel Channel to read from.
+     * @param[in] read_mode Read mode.
+     * @param[out] voltage Pointer to where the value will be stored.
+     * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
+     */
+    mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
+                                       mcp320x_channel_t channel,
+                                       mcp320x_read_mode_t read_mode,
+                                       uint16_t *voltage);
+
+    /**
+     * @brief Sample a channel, returning a digital code from 0 to 4096 (MCP320X_RESOLUTION).
      * @note For high \p sample_count it's recommended to aquire the SPI bus using the @ref mcp320x_acquire function.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
@@ -143,14 +170,15 @@ extern "C"
      * @param[out] value Pointer to where the value will be stored.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_read(mcp320x_t *handle,
-                               mcp320x_channel_t channel,
-                               mcp320x_read_mode_t read_mode,
-                               uint16_t sample_count,
-                               uint16_t *value);
+    mcp320x_err_t mcp320x_sample(mcp320x_t *handle,
+                                 mcp320x_channel_t channel,
+                                 mcp320x_read_mode_t read_mode,
+                                 uint16_t sample_count,
+                                 uint16_t *value);
 
     /**
-     * @brief Read a voltage, in millivolts.
+     * @brief Sample a channel, returning a voltage, in millivolts.
+     * @note For high \p sample_count it's recommended to aquire the SPI bus using the @ref mcp320x_acquire function.
      * @note This function is not thread safe when multiple tasks access the same SPI device.
      * @param[in] handle MCP320X handle.
      * @param[in] channel Channel to read from.
@@ -159,11 +187,11 @@ extern "C"
      * @param[out] voltage Pointer to where the value will be stored.
      * @return MCP320X_OK when success, otherwise any MCP320X_ERR* code.
      */
-    mcp320x_err_t mcp320x_read_voltage(mcp320x_t *handle,
-                                       mcp320x_channel_t channel,
-                                       mcp320x_read_mode_t read_mode,
-                                       uint16_t sample_count,
-                                       uint16_t *voltage);
+    mcp320x_err_t mcp320x_sample_voltage(mcp320x_t *handle,
+                                         mcp320x_channel_t channel,
+                                         mcp320x_read_mode_t read_mode,
+                                         uint16_t sample_count,
+                                         uint16_t *voltage);
 
 #ifdef __cplusplus
 }
