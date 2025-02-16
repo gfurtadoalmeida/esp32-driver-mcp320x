@@ -31,7 +31,6 @@
     "debug.log": true,
     "partition_table": true,
   },
-  "idf.adapterTargetName": "esp32",
   "idf.flashBaudRate": "115200",
   "idf.flashType": "UART",
   "idf.monitorBaudRate": "115200",

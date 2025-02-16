@@ -115,8 +115,8 @@ This guide is based on the **contributing.md**. [Make your own](https://contribu
 
 [docker-badge]: https://img.shields.io/badge/docker-2496ED?logo=docker&style=for-the-badge&logoColor=FFFFFF
 [docker-url]: https://www.docker.com/
-[esp-idf-badge]: https://img.shields.io/badge/espressif-5.3-E7352C?logo=espressif&style=for-the-badge
-[esp-idf-url]: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html
+[esp-idf-badge]: https://img.shields.io/badge/espressif-5.4-E7352C?logo=espressif&style=for-the-badge
+[esp-idf-url]: https://docs.espressif.com/projects/esp-idf/en/v5.4/esp32/index.html
 [issues-bug]: https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/labels/bug
 [issues-page]: https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/issues
 [issues-new]: https://github.com/gfurtadoalmeida/esp32-driver-mcp320x/issues/new/choose
