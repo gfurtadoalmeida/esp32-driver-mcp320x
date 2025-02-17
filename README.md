@@ -6,7 +6,7 @@ ESP32 driver for Microchip [MCP3204](https://www.microchip.com/en-us/product/MCP
 
 ## Characteristics
 
-* ESP-IDF: [v5.3](https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32/index.html)
+* ESP-IDF: [v5.4](https://docs.espressif.com/projects/esp-idf/en/v5.4/esp32/index.html)
 * Written in **C** using just the [ESP-IDF Framework](https://github.com/espressif/esp-idf).
 * Testable: 30+ tests.
 
