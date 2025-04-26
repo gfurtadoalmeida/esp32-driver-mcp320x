@@ -102,7 +102,7 @@ mcp320x_err_t mcp320x_read(mcp320x_t *handle,
     CMP_CHECK((value != NULL), "value error(NULL)", MCP320X_ERR_INVALID_VALUE_HANDLE)
 
     spi_transaction_t transaction = {
-        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA | SPI_TRANS_MODE_OCT,
+        .flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA,
         .cmd = 0,
         .addr = 0,
         .length = 24};
